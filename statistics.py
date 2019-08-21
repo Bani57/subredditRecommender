@@ -105,15 +105,19 @@ if __name__ == "__main__":
     combined_model_predicted_label_probabilities = load_object("models/combined_model_predicted_label_probabilities")
     classification_testing_labels = load_object("data/labels/classification_testing_labels")
 
-    combined_model_scores = {"Combined model": score_classifier(combined_model_predicted_labels,
-                                                                combined_model_predicted_label_probabilities,
-                                                                classification_testing_labels)}
-    combined_model_scores = scores_to_table(combined_model_scores)
-    combined_model_scores.to_csv('scores/combined_model.csv', sep=',', index=True, header=True,
-                                 encoding='utf-8')
+    combined_model_2 = load_object("models/combined_model_2")
+    combined_model_2_predicted_labels = \
+        load_object("models/combined_model_2_predicted_labels")
+    combined_model_2_predicted_label_probabilities = \
+        load_object("models/combined_model_2_predicted_label_probabilities")
 
     get_confusion_matrix_and_plot_roc_curve(combined_model_predicted_labels,
                                             combined_model_predicted_label_probabilities,
                                             classification_testing_labels,
-                                            "Combined model",
+                                            "Fusion model: Majority vote",
                                             "plots/combined_model_roc_curve.png")
+    get_confusion_matrix_and_plot_roc_curve(combined_model_2_predicted_labels,
+                                            combined_model_2_predicted_label_probabilities,
+                                            classification_testing_labels,
+                                            "Fusion model: All features",
+                                            "plots/combined_model_2_roc_curve.png")

@@ -639,3 +639,38 @@ if __name__ == "__main__":
         combined_model_scores = scores_to_table(combined_model_scores)
         combined_model_scores.to_csv('scores/combined_model.csv', sep=',', index=True, header=True,
                                      encoding='utf-8')
+
+    if not isfile("scores/combined_model_2.csv"):
+        print("Scoring combined model 2...")
+        network_structure_training_set = pd.read_csv('data/datasets/network_structure_training_set.csv', sep=',',
+                                                     index_col=False, header=0, encoding='utf-8')
+        node2vec_training_set = pd.read_csv('data/datasets/node2vec_training_set.csv', sep=',',
+                                            index_col=False, header=0, encoding='utf-8')
+        content_similarity_training_set = pd.read_csv('data/datasets/content_similarity_training_set.csv', sep=',',
+                                                      index_col=False, header=0, encoding='utf-8')
+        combined_training_set = \
+            np.hstack((network_structure_training_set, node2vec_training_set, content_similarity_training_set))
+
+        network_structure_testing_set = pd.read_csv('data/datasets/network_structure_testing_set.csv', sep=',',
+                                                    index_col=False, header=0, encoding='utf-8')
+        node2vec_testing_set = pd.read_csv('data/datasets/node2vec_testing_set.csv', sep=',',
+                                           index_col=False, header=0, encoding='utf-8')
+        content_similarity_testing_set = pd.read_csv('data/datasets/content_similarity_testing_set.csv', sep=',',
+                                                     index_col=False, header=0, encoding='utf-8')
+        combined_testing_set = \
+            np.hstack((network_structure_testing_set, node2vec_testing_set, content_similarity_testing_set))
+
+        dataset_tuple = (combined_training_set, classification_training_labels,
+                         combined_testing_set, classification_testing_labels)
+        combined_model_2, combined_model_2_scores = train_model(dataset_tuple)
+        save_object(combined_model_2, "models/combined_model_2")
+
+        combined_model_2_predicted_labels = combined_model_2.predict(combined_testing_set)
+        combined_model_2_predicted_probs = combined_model_2.predict_proba(combined_testing_set)
+
+        save_object(combined_model_2_predicted_labels, "models/combined_model_2_predicted_labels")
+        save_object(combined_model_2_predicted_probs, "models/combined_model_2_predicted_label_probabilities")
+
+        combined_model_2_scores = scores_to_table(combined_model_2_scores)
+        combined_model_2_scores.to_csv('scores/combined_model_2.csv', sep=',', index=True, header=True,
+                                       encoding='utf-8')
