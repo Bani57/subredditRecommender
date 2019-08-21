@@ -6,16 +6,15 @@ from feature_utils import remove_extreme_values
 from graph_utils import reduce_graph_by_weight_threshold, draw_network
 from scipy.stats.kde import gaussian_kde
 from sklearn.metrics import accuracy_score, confusion_matrix, roc_auc_score, roc_curve
-from classification_utils import score_classifier, scores_to_table
 
 
 def generate_distribution_plot(vector, name, file):
     plt.figure(figsize=(16, 9), dpi=1280 // 16)
     plt.suptitle('Distribution plot for ' + name.lower(), fontsize=24)
     plt.subplot(1, 2, 1)
-    plt.title('Histogram for ' + name.lower())
+    plt.title('Histogram for ' + name.lower(), fontsize=18)
     plt.hist(vector, bins='sturges', color='darkorange', edgecolor='black', density=True)
-    plt.xlabel(name)
+    plt.xlabel(name, fontsize=18)
     x = np.arange(min(vector), max(vector), 0.01, dtype='float')
     kernel = gaussian_kde(vector)
     kernel.covariance_factor = lambda: 0.25
@@ -23,12 +22,12 @@ def generate_distribution_plot(vector, name, file):
     density = kernel.evaluate(x)
     plt.plot(x, density, color='red', linewidth=3)
     plt.subplot(1, 2, 2)
-    plt.title('Boxplot for ' + name.lower() + '\nMedian: ' + str(np.percentile(vector, 50)))
+    plt.title('Boxplot for ' + name.lower() + '\nMedian: ' + str(np.percentile(vector, 50)), fontsize=14)
     plt.boxplot(vector, patch_artist=True, boxprops={'facecolor': 'darkorange'},
                 medianprops={'color': 'black', 'linewidth': 3},
                 flierprops={'marker': 'o', 'markerfacecolor': 'red', 'markersize': 6})
     plt.xticks([])
-    plt.xlabel(name)
+    plt.xlabel(name, fontsize=18)
     plt.savefig(file, dpi="figure")
 
 
@@ -43,12 +42,12 @@ def get_confusion_matrix_and_plot_roc_curve(predicted_labels, predicted_label_pr
     plt.plot([0, 1], [0, 1], color='red', lw=3, linestyle='--')
     plt.xlim([0, 1])
     plt.ylim([0, 1])
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
+    plt.xlabel('False Positive Rate', fontsize=18)
+    plt.ylabel('True Positive Rate', fontsize=18)
     plt.title('ROC Curve - ' + str(name) +
               '\nAccuracy: ' + str(accuracy) +
               '\nROC AUC score: ' + str(roc_score),
-              fontsize=18)
+              fontsize=24)
     plt.savefig(file, dpi="figure")
     return confusion_mat
 
