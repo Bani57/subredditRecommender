@@ -10,11 +10,13 @@ from sklearn.metrics import accuracy_score, confusion_matrix, roc_auc_score, roc
 
 def generate_distribution_plot(vector, name, file):
     plt.figure(figsize=(16, 9), dpi=1280 // 16)
-    plt.suptitle('Distribution plot for ' + name.lower(), fontsize=24)
+    plt.suptitle('Distribution plot for ' + name, fontsize=24)
     plt.subplot(1, 2, 1)
-    plt.title('Histogram for ' + name.lower(), fontsize=18)
+    plt.title('Histogram for ' + name, fontsize=18)
     plt.hist(vector, bins='sturges', color='darkorange', edgecolor='black', density=True)
     plt.xlabel(name, fontsize=18)
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
     x = np.arange(min(vector), max(vector), 0.01, dtype='float')
     kernel = gaussian_kde(vector)
     kernel.covariance_factor = lambda: 0.25
@@ -22,12 +24,13 @@ def generate_distribution_plot(vector, name, file):
     density = kernel.evaluate(x)
     plt.plot(x, density, color='red', linewidth=3)
     plt.subplot(1, 2, 2)
-    plt.title('Boxplot for ' + name.lower() + '\nMedian: ' + str(np.percentile(vector, 50)), fontsize=14)
+    plt.title('Boxplot for ' + name + '\nMedian: ' + str(np.percentile(vector, 50)), fontsize=14)
     plt.boxplot(vector, patch_artist=True, boxprops={'facecolor': 'darkorange'},
                 medianprops={'color': 'black', 'linewidth': 3},
                 flierprops={'marker': 'o', 'markerfacecolor': 'red', 'markersize': 6})
     plt.xticks([])
     plt.xlabel(name, fontsize=18)
+    plt.yticks(fontsize=14)
     plt.savefig(file, dpi="figure")
 
 
@@ -43,7 +46,9 @@ def get_confusion_matrix_and_plot_roc_curve(predicted_labels, predicted_label_pr
     plt.xlim([0, 1])
     plt.ylim([0, 1])
     plt.xlabel('False Positive Rate', fontsize=18)
+    plt.xticks(fontsize=14)
     plt.ylabel('True Positive Rate', fontsize=18)
+    plt.yticks(fontsize=14)
     plt.title('ROC Curve - ' + str(name) +
               '\nAccuracy: ' + str(accuracy) +
               '\nROC AUC score: ' + str(roc_score),
@@ -70,7 +75,7 @@ if __name__ == "__main__":
     draw_network(sus_network_reduced,
                  "Subreddit-user-Subreddit network", "plots/sus_network.png",
                  draw_node_labels=True)
-    generate_distribution_plot(sus_degrees, 'Node degree in subreddit network',
+    generate_distribution_plot(sus_degrees, 'Node degree in SuS network',
                                "plots/sus_node_degree_distribution.png")
 
     usu_network = nx.read_gpickle('data/networks/UsU')
@@ -82,7 +87,7 @@ if __name__ == "__main__":
     draw_network(usu_network_reduced,
                  "User-subreddit-user network", "plots/usu_network.png",
                  draw_node_labels=True)
-    generate_distribution_plot(usu_degrees, 'Node degree in user network', "plots/usu_node_degree_distribution.png")
+    generate_distribution_plot(usu_degrees, 'Node degree in UsU network', "plots/usu_node_degree_distribution.png")
 
     usu_community_membership = load_object("data/features/UsU_community_membership")
     sus_community_membership = load_object("data/features/SuS_community_membership")
